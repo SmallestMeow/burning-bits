@@ -16,7 +16,7 @@ export function servers(ns, ... args) {
     const {server: currentServer, path: currentPath} = queue.shift();
 
     if (args[0] === "find") {
-      if(currentServer === ns.args[1]) {
+      if(currentServer === args[1]) {
         return currentPath;
         }
     }

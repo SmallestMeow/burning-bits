@@ -1,52 +1,38 @@
-
-import { servers } from "utilities.js";
+import { servers } from "utilities.js"
 
 export async function main(ns) {
  
-  const servs = servers(ns, "list", "complete");
+  const serverz = servers(ns, "list", "complete");
   const doNotHack = ns.getPurchasedServers();
   doNotHack.push("home");
-  const willBackdoor = (server) => { return server.hasAdminRights 
-    && !server.backdoorInstalled 
-    && !doNotHack.includes(server.hostname) }; 
+  const willBackdoor = (mark) => { return mark.hasAdminRights 
+    && !mark.backdoorInstalled 
+    && !doNotHack.includes(mark.hostname) };
 
-  for (let i = 0; i < servs.length; i++) {
-
-    //ns.print(`${servs[i]}`);
-    
-    const toRoot = i;
-
-    if (!ns.singularity.connect(servs[toRoot])) {
-      //ns.print(`attempting to connect`);
-      while (!ns.singularity.connect(servs[toRoot])) toRoot--;
-      //ns.print(ns.singularity.connect(servs[i]));
-      //ns.print(ns.singularity.connect(servs[jump]));
-    }
-
-    let mark = ns.getServer(servs[i]);
-    //ns.print(mark.hasAdminRights);
-    //ns.print(mark.isConnectedTo);
-    
-    if (willBackdoor(mark)) await ns.singularity.installBackdoor();
-    //ns.print(mark.backdoorInstalled);
-
-    let toScan = ns.scan(servs[i]);
-    
-    for (let j = 0; j < toScan.length; j++) {
-      if (toScan[j] != servs[i]) {
-        ns.print(`${toScan[j]}`);
-        ns.singularity.connect(toScan[j]);
-        mark = ns.getServer(toScan[j]);
-        //ns.print(mark.isConnectedTo);
-        //ns.print(mark.hasAdminRights);
-        if (willBackdoor(mark)) await ns.singularity.installBackdoor();
-        //ns.print(mark.backdoorInstalled);
-        //ns.print(ns.singularity.connect(servs[i]));
+  for (const server of serverz) {
+    // ns.print(server);
+    if (!ns.singularity.connect(server)) { 
+      ns.singularity.connect("home"); 
+      ns.singularity.connect(server); 
       }
-      ns.singularity.connect(servs[i]);
+    // else ns.print(`connected to ${server}`);
+    if (willBackdoor(ns.getServer(server))) {
+      ns.tprint(`Installing backdoor on ${server}`)
+      await ns.singularity.installBackdoor();
+    }
+    ns.print(`${server} has backdoor? ${ns.getServer(server).backdoorInstalled}`);
+    const scannedServers = ns.scan(server);
+    for (const scanned of scannedServers) {
+      if (!ns.singularity.connect(scanned)) { 
+      ns.singularity.connect(server);
+      ns.singularity.connect(scanned);
+      }
+      // else ns.print(`connected to ${scanned}`);
+      if (willBackdoor(ns.getServer(scanned))) {
+        ns.tprint(`Installing backdoor on ${scanned}`)
+        await ns.singularity.installBackdoor();
+      }
+      // ns.print(`${scanned} has backdoor? ${ns.getServer(scanned).backdoorInstalled}`);
     }
   }
-
-  // ns.print(servs);
-  
 }
