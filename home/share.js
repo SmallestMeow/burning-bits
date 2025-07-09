@@ -1,5 +1,5 @@
 // servers/home/share.js
-async function main(ns) {
+export async function main(ns) {
   const port = ns.run("orbit.js", 1, 0);
   await ns.nextPortWrite(port);
   const servers = ns.readPort(port);
@@ -21,10 +21,7 @@ async function main(ns) {
   }
   ram = usedRam("home");
   threads = Math.floor((ram - 2.7) / 4);
-  if (threads > 0 && !ns.isRunning("/hacking/batch.js", "home")) {
+  if (threads > 0 && !ns.fileExists("/hacking/batch.js", "home")) {
     ns.run("factionRAM.js", threads);
   }
 }
-export {
-  main
-};
