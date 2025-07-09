@@ -1,3 +1,5 @@
+/** @param {NS} ns */
+
 // servers/home/pserv.js
 export async function main(ns) {
   // const target = ns.args[1];
@@ -18,7 +20,31 @@ export async function main(ns) {
     case "server_buy":
       ns.purchaseServer(ns.args[1], ns.args[2]);
       break;
-    case "limit":
+    case "buyall":
+      let i = servers.length;
+      let hostname = "pserv";
+
+      while (ns.getPlayer().money > ns.getPurchasedServerCost(32) 
+        && servers.length < ns.getPurchasedServerLimit()) {
+        ns.purchaseServer(hostname + i, 32);
+        i++;
+        await ns.sleep(0);
+      }
+
+      if (servers.length >= ns.getPurchasedServerLimit()) {
+        ns.tprint("You are at the limit!");
+      }
+
+      break;
+    case "upgradeall":
+      for (let server of servers) {
+        let ram = ns.getServerMaxRam(server); 
+        if (ns.getPurchasedServerUpgradeCost(server, ram * 2)
+        < ns.getPlayer().money) {
+      ns.upgradePurchasedServer(server, ram * 2)
+      ns.tprint(`upgraded ${server}!`);
+        } await ns.sleep(0);
+      }
       break;
   }
 }
