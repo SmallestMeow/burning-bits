@@ -1,5 +1,8 @@
 // servers/home/hacking/helpPrep.js
-async function main(ns) {
+
+/** @param {NS} ns */
+
+export async function main(ns) {
   const target = ns.args[0];
   const orbitPort = ns.run("orbit.js", 1, 0);
   await ns.nextPortWrite(orbitPort);
@@ -9,15 +12,19 @@ async function main(ns) {
   for (let i = 0; i < servers.length; i++) {
     if (ns.hasRootAccess(servers[i]) && !doNotHack.includes(servers[i])) {
       ns.killall(servers[i]);
-      if (ns.fileExists("prep.js", servers[i])) {
-        ns.rm("prep.js", servers[i]);
+      if (ns.fileExists("/hacking/prep.js", servers[i])) {
+        ns.rm("/hacking/prep.js", servers[i]);
       }
-      if (ns.fileExists("grow.js", servers[i])) {
-        ns.rm("grow.js", servers[i]);
+      if (ns.fileExists("/hacking/grow.js", servers[i])) {
+        ns.rm("/hacking/grow.js", servers[i]);
       }
-      if (ns.fileExists("weaken.js", servers[i])) {
-        ns.rm("weaken.js", servers[i]);
+      if (ns.fileExists("/hacking/weaken.js", servers[i])) {
+        ns.rm("/hacking/weaken.js", servers[i]);
       }
+      if (ns.fileExists("utilities.js", servers[i])) {
+        ns.rm("utilities.js", servers[i]);
+      }
+      ns.scp("utilities.js", servers[i], "home");
       ns.scp("/hacking/prep.js", servers[i], "home");
       ns.scp("/hacking/grow.js", servers[i], "home");
       ns.scp("/hacking/weaken.js", servers[i], "home");
@@ -28,6 +35,3 @@ async function main(ns) {
     }
   }
 }
-export {
-  main
-};

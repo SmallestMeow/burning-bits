@@ -1,4 +1,6 @@
-async function main(ns) {
+/** @param {NS} ns */
+
+export async function main(ns) {
 
   let target = ns.args[0];
   // const maxMoney = ns.getServerMaxMoney(target);
@@ -28,9 +30,10 @@ async function main(ns) {
 
 
   // ns.print(`${hThreadz} ${gThreadz()} ${w1Threadz} ${w2Threadz} ${totalRAM()} ${maxxRAM()}`);
-
+  
+  let i = 0;
   while (true) {
-    while (availRam() - 5 > totalRAM()) {
+    while (availRam() - 5 > totalRAM() && i < 3000) {
       while (maxxRAM()) {
         if (hAmount() > 0.1) break;
         if (hAmount() > 1) {
@@ -50,12 +53,11 @@ async function main(ns) {
       ns.run("/hacking/weaken.js", w1Threadz(), target);
       ns.run("/hacking/grow.js", gThreadz(), target, gOffset);
       ns.run("/hacking/weaken.js", w2Threadz(), target, 10);
-      await ns.sleep(5);
+      await ns.sleep(0);
+      i++
     }
+    i = 0;
     ns.print(`${availRam()} ${totalRAM()} ${hThreadz}`)
     await ns.sleep(ns.getWeakenTime(target) + 15);
   }
 }
-export {
-  main
-};

@@ -6,6 +6,11 @@
   return servers
 } */
 
+  /** @param {NS} ns */
+export function availRam(ns, server) {
+  return ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
+}
+
 /** @param {NS} ns */
 export function servers(ns, ... args) {
   const queue = [{server:"home", path:["home"]}]

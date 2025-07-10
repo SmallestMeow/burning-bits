@@ -1,5 +1,7 @@
 // servers/home/hacking/helpHack.js
-async function main(ns) {
+
+/** @param {NS} ns */
+export async function main(ns) {
   const target = ns.args[0];
   const orbitPort = ns.exec("orbit.js", "home", 1, 0);
   await ns.nextPortWrite(orbitPort);
@@ -26,7 +28,9 @@ async function main(ns) {
       }
       
       let ram = usedRam(servers[i]);
-      if (ram >= 32) {
+      
+      if (ns.getServer(servers[i]).hostname.includes("pserv")) {
+      // if (ram >= 32) {
         ns.scp("/hacking/batch.js", servers[i], "home");
         ns.scp("/hacking/hack.js", servers[i], "home");
         ns.scp("/hacking/grow.js", servers[i], "home");
@@ -36,6 +40,3 @@ async function main(ns) {
     }
   }
 }
-export {
-  main
-};

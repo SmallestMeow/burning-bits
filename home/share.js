@@ -21,7 +21,7 @@ export async function main(ns) {
   }
   ram = usedRam("home");
   threads = Math.floor((ram - 2.7) / 4);
-  if (threads > 0 && !ns.fileExists("/hacking/batch.js", "home")) {
+  //if (threads > 0 && !ns.fileExists("/hacking/batch.js", "home")) {
     ns.run("factionRAM.js", threads);
-  }
+  //}
 }
