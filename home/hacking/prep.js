@@ -11,8 +11,8 @@ export async function main(ns) {
   const scriptRam = 1.75;
   let gOffset = 0;
   let ram = () => availRam(ns, ns.getServer().hostname) * 0.85;
-  let gThreadz = Math.ceil(ram() / scriptRam * 0.9);
-  let wThreadz = Math.ceil(gThreadz / 12.5 < 1 ? 1 : gThreadz / 12.5);
+  let gThreadz = 1;
+  let wThreadz = 1;
   let totalRAM = gThreadz + wThreadz * scriptRam;
   let maxedRAM = true;
   let secLevel = (mark) => ns.getServerSecurityLevel(mark);
@@ -21,12 +21,10 @@ export async function main(ns) {
   let maxMoney = (mark) => ns.getServerMaxMoney(mark);
   let target = ns.args[0];
   while (true) {
+
     gOffset = ns.getWeakenTime(target) - ns.getGrowTime(target) - 10;
     maxedRAM = gThreadz + wThreadz * scriptRam > ram();
-    if (maxedRAM) {
-      ns.tprint(`Too much RAM! ${totalRAM} out of ${ram()}`);
-      break;
-    }
+
     ns.print(`${ns.getServerMoneyAvailable(target)} out of ${ns.getServerMaxMoney(target)}
     at ${ns.getServerSecurityLevel(target)} of ${ns.getServerMinSecurityLevel(target)}`);
     if (secLevel(target) == minSec(target)) {
@@ -38,10 +36,20 @@ export async function main(ns) {
       await ns.sleep(ns.getWeakenTime(target) + 5);
     }
     else if (money(target) < maxMoney(target)) {
+      gThreadz = Math.ceil(ram() / scriptRam * 0.9);
+      wThreadz = Math.ceil(gThreadz / 12.5 < 1 ? 1 : gThreadz / 12.5);
       ns.run("/hacking/grow.js", gThreadz, target, gOffset);
       ns.run("/hacking/weaken.js", wThreadz, target);
       await ns.sleep(ns.getWeakenTime(target) + 5);
     }
+
+    maxedRAM = gThreadz + wThreadz * scriptRam > ram();
+
+    if (maxedRAM) {
+      ns.tprint(`Too much RAM! ${totalRAM} out of ${ram()}`);
+      break;
+    }
+
   }
   ns.print("DONE!");
   ns.print(`${money(target)} and ${maxMoney(target)}`);
