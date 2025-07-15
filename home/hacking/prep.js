@@ -23,7 +23,6 @@ export async function main(ns) {
   while (true) {
 
     gOffset = ns.getWeakenTime(target) - ns.getGrowTime(target) - 10;
-    maxedRAM = gThreadz + wThreadz * scriptRam > ram();
 
     ns.print(`${ns.getServerMoneyAvailable(target)} out of ${ns.getServerMaxMoney(target)}
     at ${ns.getServerSecurityLevel(target)} of ${ns.getServerMinSecurityLevel(target)}`);
@@ -43,12 +42,12 @@ export async function main(ns) {
       await ns.sleep(ns.getWeakenTime(target) + 5);
     }
 
-    maxedRAM = gThreadz + wThreadz * scriptRam > ram();
+    // maxedRAM = gThreadz + wThreadz * scriptRam > ram();
 
-    if (maxedRAM) {
+    /* if (maxedRAM) {
       ns.tprint(`Too much RAM! ${totalRAM} out of ${ram()}`);
       break;
-    }
+    } */
 
   }
   ns.print("DONE!");

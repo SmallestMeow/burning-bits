@@ -1,7 +1,7 @@
 // servers/home/formtest.js
-async function main(ns) {
-  ns.tprint(ns.formulas.reputation.calculateFavorToRep(148));
+
+/** @param {NS} ns */
+
+export async function main(ns) {
+  ns.tprint(ns.formulas.reputation.calculateFavorToRep(150));
 }
-export {
-  main
-};

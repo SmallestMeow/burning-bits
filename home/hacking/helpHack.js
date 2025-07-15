@@ -10,9 +10,15 @@ export async function main(ns) {
   let usedRam = (mark) => ns.getServerMaxRam(mark) - ns.getServerUsedRam(mark);
   for (let i = 0; i < servers.length; i++) {
     if (ns.hasRootAccess(servers[i]) && !doNotHack.includes(servers[i])) {
-      ns.killall(servers[i]);
+      //ns.killall(servers[i]);
       if (ns.fileExists("/hacking/temp.js", servers[i])) {
         ns.rm("/hacking/temp.js", servers[i]);
+      }
+      if (ns.fileExists("/hacking/temp.js", servers[i])) {
+        ns.rm("/hacking/temp.js", servers[i]);
+      }
+      if (ns.fileExists("utilities.js", servers[i])) {
+        ns.rm("utilities.js", servers[i]);
       }
       if (ns.fileExists("/hacking/batch.js", servers[i])) {
         ns.rm("/hacking/batch.js", servers[i]);
@@ -29,8 +35,9 @@ export async function main(ns) {
       
       let ram = usedRam(servers[i]);
       
-      if (ns.getServer(servers[i]).hostname.includes("pserv")) {
-      // if (ram >= 32) {
+      // if (ns.getServer(servers[i]).hostname.includes("pserv")) {
+      if (ram >= 16) {
+        ns.scp("utilities.js", servers[i], "home");
         ns.scp("/hacking/batch.js", servers[i], "home");
         ns.scp("/hacking/hack.js", servers[i], "home");
         ns.scp("/hacking/grow.js", servers[i], "home");

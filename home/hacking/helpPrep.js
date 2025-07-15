@@ -11,7 +11,7 @@ export async function main(ns) {
   let usedRam = (mark) => ns.getServerMaxRam(mark) - ns.getServerUsedRam(mark);
   for (let i = 0; i < servers.length; i++) {
     if (ns.hasRootAccess(servers[i]) && !doNotHack.includes(servers[i])) {
-      ns.killall(servers[i]);
+      // ns.killall(servers[i]);
       if (ns.fileExists("/hacking/prep.js", servers[i])) {
         ns.rm("/hacking/prep.js", servers[i]);
       }

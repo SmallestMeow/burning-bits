@@ -11,7 +11,9 @@ async function main(ns) {
       ns.killall(orbit[i]);
     }
   }
-  ns.killall("home");
+
+  if (ns.args == "") ns.killall("home");
+  
   function broadenOrbit(server) {
     let servers = ns.scan(server);
     for (let i = 0; i < servers.length; i++) {

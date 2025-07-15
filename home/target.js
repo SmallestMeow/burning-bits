@@ -19,7 +19,7 @@ async function main(ns) {
   }
   function findHack(targets) {
     for (let i = 0; i < targets.length; i++) {
-      if (!doNotHack.includes(targets[i]) && ns.getServerRequiredHackingLevel(targets[i]) <= ns.getHackingLevel() / 2) {
+      if (!doNotHack.includes(targets[i]) && ns.getServerRequiredHackingLevel(targets[i]) < ns.getHackingLevel() / 2) {
         if (shouldHack(targets[i]) > shouldHack(target)) {
           target5 = target4;
           target4 = target3;

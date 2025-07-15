@@ -46,5 +46,22 @@ export async function main(ns) {
         } await ns.sleep(0);
       }
       break;
+    case "autoupgrade":
+      while (true) {
+        let flag = 0;
+        for (let server of servers) {
+          let ram = ns.getServerMaxRam(server); 
+          if (ns.getPlayer().money >= ns.getPurchasedServerUpgradeCost(server, ram * 2)) {
+            ns.upgradePurchasedServer(server, ram * 2);
+            await ns.sleep(0);
+          }
+          if (ns.getServerMaxRam(server) == ns.getPurchasedServerMaxRam) flag += 1;
+        }
+        if (flag == servers.length) {
+          ns.tprint("All pservs at max RAM!");
+          break;
+        }
+        await ns.sleep(60000)
+      }
   }
 }

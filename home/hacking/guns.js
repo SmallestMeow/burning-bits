@@ -10,7 +10,12 @@ export async function main(ns) {
   ns.disableLog("getServerMaxMoney");
   
   while (true) {
-    ns.run("/hacking/grow.js", 200000, "joesguns");
+    
+    //ns.tprint(Math.floor(availRam(ns,"home") /2));
+    while (availRam(ns, "home") > 200) {
+      ns.run("/hacking/grow.js", Math.floor(availRam(ns, "home") * 0.9 / 1.75), "joesguns");
+    }
+    
     await ns.sleep(10);
     }
 }

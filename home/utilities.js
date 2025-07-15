@@ -12,6 +12,19 @@ export function availRam(ns, server) {
 }
 
 /** @param {NS} ns */
+export function updateProgress(ns, max_time, run_time, bar_length = 60) {
+  let done = run_time > 0 ? Math.max(max_time / run_time, 1) : 0
+  let buffer = "["
+  if (done > 0) {
+    buffer = buffer.padEnd(Math.round((bar_length - 1) / done), "|") // open square bracket + asterisk
+  }
+  buffer = buffer.padEnd(bar_length - 1, "-")
+  buffer += "]"
+
+  return buffer
+}
+
+/** @param {NS} ns */
 export function servers(ns, ... args) {
   const queue = [{server:"home", path:["home"]}]
   const visited = new Set(["home"]);
