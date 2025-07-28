@@ -117,19 +117,21 @@ export function checkTarget(ns, server, target = "n00dles") {
 export function copyScripts(ns, server, scripts, overwrite = false) {
   for (const script of scripts) {
     if ((!ns.fileExists(script, server) || overwrite) && ns.hasRootAccess(server)) {
-      ns.scp(script, server);
+      ns.scp(script, server, "home");
     }
   }
 }
 
 /** @param {NS} ns */
 export async function prep(ns, values, ramNet) {
+  const player = ns.getPlayer();
+  const server = ns.getServer(values.target);
 	const maxMoney = values.maxMoney;
 	const minSec = values.minSec;
 	let money = values.money;
 	let sec = values.sec;
 	while (!isPrepped(ns, values.target)) {
-		const wTime = ns.getWeakenTime(values.target);
+		const wTime = ns.formulas.hacking.weakenTime(server, player);
 		const gTime = wTime * 0.8;
 		const dataPort = ns.getPortHandle(ns.pid);
 		dataPort.clear();
@@ -150,7 +152,7 @@ export async function prep(ns, values, ramNet) {
 		*/
 
 		if (money < maxMoney) {
-			gThreads = Math.ceil(ns.growthAnalyze(values.target, maxMoney / money));
+			gThreads = Math.ceil(ns.formulas.hacking.growThreads(server, player, maxMoney));
 			wThreads2 = Math.ceil(ns.growthAnalyzeSecurity(gThreads) / 0.05);
 		}
 		if (sec > minSec) {

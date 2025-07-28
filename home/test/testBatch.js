@@ -7,6 +7,7 @@ const TYPES = ["hack", "weaken1", "grow", "weaken2"];
 const WORKERS = ["/test/thack.js", "/test/tweaken.js", "/test/tgrow.js"];
 const SCRIPTS = { hack: "/test/thack.js", weaken1: "/test/tweaken.js", grow: "/test/tgrow.js", weaken2: "/test/tweaken.js" };
 const COSTS = { hack: 1.7, weaken1: 1.75, grow: 1.75, weaken2: 1.75 };
+
 //const OFFSETS = { hack: 0, weaken1: 1, grow: 2, weaken2: 3 };
 
 /** @param {NS} ns */
@@ -15,7 +16,8 @@ export async function main(ns) {
   ns.disableLog("ALL");
   ns.ui.openTail();
 
-
+  const buffer = ns.args[0] === "buffer" ? 32 : 0;
+  
   //let batchCount = 0;
 
   while (true) {
@@ -24,8 +26,8 @@ export async function main(ns) {
     dataPort.clear();
 
     let target = "n00dles";
-
-    const myServers = servers(ns, "list").filter(s => ns.getServer(s).hasAdminRights);
+   
+    let myServers = servers(ns, "list").filter(s => ns.getServer(s).hasAdminRights);
 
     for (const server of myServers) target = checkTarget(ns, server, target);
 
@@ -33,7 +35,7 @@ export async function main(ns) {
       for (const file of WORKERS) ns.scp(file, server)
     }
 
-    const ramNet = new RamNet(ns, myServers);
+    const ramNet = new RamNet(ns, myServers, buffer);
     const metrics = new Metrics(ns, target);
 
     if (!isPrepped(ns, target)) await prep(ns, metrics, ramNet);
@@ -83,6 +85,9 @@ export async function main(ns) {
     }
 
     jobs.reverse();
+
+    let width = 318; // at target.length of 8
+    if (metrics.target.length > 8) width += metrics.target.length - 8;
 
     const timer = setInterval(() => {
       ns.clearLog()
@@ -189,10 +194,11 @@ class RamNet {
   #prepThreads = 0; // Used for the prep function
   #index = new Map(); // An index for accessing memory blocks by server. More on this later.
 
-  constructor(ns, servers) {
+  constructor(ns, servers, buffer) {
     for (const server of servers) {
       if (ns.hasRootAccess(server)) {
-        const maxRam = ns.getServerMaxRam(server);
+        let maxRam = ns.getServerMaxRam(server);
+        if (server === "home") maxRam -= buffer;
         const ram = maxRam - ns.getServerUsedRam(server);
         if (ram >= 1.60) {
           const block = { server: server, ram: ram };
