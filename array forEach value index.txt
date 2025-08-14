@@ -1,0 +1,9 @@
+
+array.forEach( (value, index) => if (city in value) {
+    let max = division.warehouses[index].city.size;
+    let used = division.warehouses[index].city.sizeUsed;
+    
+    if (max - used < max / 10) {
+        
+    }
+})
